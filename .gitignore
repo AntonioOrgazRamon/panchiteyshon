@@ -1,0 +1,23 @@
+# Entorno y secretos
+.env
+.env.local
+.env.*.local
+
+# Dependencias
+node_modules/
+
+# Angular / build cache
+.angular/
+frontend-angular/.angular/
+
+# Builds
+dist/
+frontend-angular/dist/
+frontend-react/dist/
+
+# IDE / OS
+.idea/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
