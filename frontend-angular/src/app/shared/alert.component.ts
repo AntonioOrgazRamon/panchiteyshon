@@ -5,13 +5,7 @@ import { NgClass } from '@angular/common';
   selector: 'app-alert',
   standalone: true,
   imports: [NgClass],
-  template: `
-    @if (message()) {
-      <div class="alert" [ngClass]="type() === 'success' ? 'alert-success' : type() === 'error' ? 'alert-danger' : 'alert-info'" role="alert">
-        {{ message() }}
-      </div>
-    }
-  `,
+  templateUrl: './alert.component.html',
 })
 export class AlertComponent {
   message = input<string | null>(null);

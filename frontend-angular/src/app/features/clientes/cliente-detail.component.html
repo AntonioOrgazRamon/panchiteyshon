@@ -1,0 +1,53 @@
+<app-alert [message]="errorMessage()" type="error" />
+@if (loading()) {
+  <app-loader />
+} @else if (cliente()) {
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>{{ cliente()!.nombreContacto }} — {{ cliente()!.empresa }}</h1>
+    <div>
+      <a [routerLink]="['/clientes', cliente()!.id, 'edit']" class="btn btn-primary me-2">Editar</a>
+      <a routerLink="/clientes" class="btn btn-outline-secondary">Volver</a>
+    </div>
+  </div>
+  <div class="card mb-3">
+    <div class="card-body">
+      <p><strong>Teléfono:</strong> {{ cliente()!.telefono }}</p>
+      <p><strong>Email:</strong> {{ cliente()!.email || '-' }}</p>
+      <p><strong>Ciudad:</strong> {{ cliente()!.ciudad || '-' }}</p>
+      <p><strong>Web:</strong> {{ cliente()!.web || '-' }}</p>
+      <p><strong>Estado:</strong> <span class="badge bg-{{ cliente()!.estadoCliente === 'activo' ? 'success' : cliente()!.estadoCliente === 'pausado' ? 'warning' : 'secondary' }}">{{ cliente()!.estadoCliente }}</span></p>
+      <p><strong>MRR:</strong> {{ cliente()!.mrr != null ? (cliente()!.mrr | number) : '-' }}</p>
+      <p><strong>Fecha alta:</strong> {{ cliente()!.fechaAlta | date:'shortDate' }}</p>
+      <p><strong>Última interacción:</strong> {{ cliente()!.ultimaInteraccion ? (cliente()!.ultimaInteraccion | date:'short') : '-' }}</p>
+      <p><strong>Próxima revisión:</strong> {{ cliente()!.proximaRevision ? (cliente()!.proximaRevision | date:'short') : '-' }}</p>
+      @if (cliente()!.serviciosContratados?.length) {
+        <p><strong>Servicios:</strong> {{ cliente()!.serviciosContratados!.join(', ') }}</p>
+      }
+      @if (cliente()!.leadOrigenId) {
+        <p><strong>Lead origen:</strong> <a [routerLink]="['/leads', cliente()!.leadOrigenId]">Ver lead</a></p>
+      }
+      @if (cliente()!.observacionesInternas) {
+        <p><strong>Observaciones internas:</strong><br />{{ cliente()!.observacionesInternas }}</p>
+      }
+    </div>
+  </div>
+  <h5>Tareas asociadas</h5>
+  @if (tareas().length === 0) {
+    <p class="text-muted">Sin tareas.</p>
+  } @else {
+    <table class="table table-sm">
+      <thead><tr><th>Título</th><th>Estado</th><th>Vencimiento</th><th></th></tr></thead>
+      <tbody>
+        @for (t of tareas(); track t.id) {
+          <tr>
+            <td>{{ t.titulo }}</td>
+            <td>{{ t.estado }}</td>
+            <td>{{ t.fechaVencimiento | date:'shortDate' }}</td>
+            <td><a [routerLink]="['/tareas', t.id, 'edit']">Editar</a></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+  <a [routerLink]="['/tareas/new']" [queryParams]="{ clienteId: cliente()!.id }" class="btn btn-outline-primary">Nueva tarea</a>
+}

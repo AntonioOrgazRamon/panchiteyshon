@@ -1,0 +1,52 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <button type="button" class="btn btn-outline-secondary btn-sm" (click)="prev.emit()">‹ Anterior</button>
+  <strong>{{ title() }}</strong>
+  <button type="button" class="btn btn-outline-secondary btn-sm" (click)="next.emit()">Siguiente ›</button>
+</div>
+@if (view() === 'mes') {
+  <div class="calendar-month border rounded">
+    <div class="calendar-weekdays row g-0 text-center small text-muted border-bottom">
+      @for (w of weekdays; track w) {
+        <div class="col calendar-cell">{{ w }}</div>
+      }
+    </div>
+    @for (week of monthGrid(); track week[0].key) {
+      <div class="calendar-week row g-0 border-bottom">
+        @for (day of week; track day.key) {
+          <div class="col calendar-cell border-end p-1 min-h-calendar" [class.bg-light]="!day.isCurrentMonth">
+            <span class="small" [class.text-muted]="!day.isCurrentMonth">{{ day.day }}</span>
+            @for (t of day.tasks; track t.id) {
+              <div class="small">
+                <a [routerLink]="['/tareas', t.id, 'edit']" class="text-decoration-none" [class.text-decoration-line-through]="t.estado === 'hecha'" [class.text-muted]="t.estado === 'hecha'">{{ t.titulo }}</a>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+}
+@if (view() === 'semana') {
+  <div class="calendar-week-view border rounded">
+    <div class="row g-0 text-center border-bottom bg-light">
+      @for (d of weekDays(); track d.key) {
+        <div class="col p-2 border-end">
+          <div class="small text-muted">{{ d.weekday }}</div>
+          <strong>{{ d.day }}</strong>
+        </div>
+      }
+    </div>
+    <div class="row g-0">
+      @for (d of weekDays(); track d.key) {
+        <div class="col border-end p-2 min-h-week">
+          @for (t of d.tasks; track t.id) {
+            <div class="small mb-1">
+              <a [routerLink]="['/tareas', t.id, 'edit']" class="text-decoration-none" [class.text-decoration-line-through]="t.estado === 'hecha'" [class.text-muted]="t.estado === 'hecha'">{{ t.titulo }}</a>
+              <span class="badge bg-secondary ms-1">{{ t.prioridad }}</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

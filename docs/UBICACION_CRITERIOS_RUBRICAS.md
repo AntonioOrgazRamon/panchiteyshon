@@ -60,11 +60,36 @@ Para cada criterio se indica **qué significa** (qué pide la rúbrica) y **dón
 
 ### Validaciones
 **Qué significa:** Comprobar que los datos son correctos antes de enviarlos (campos obligatorios, email válido, números mínimos, etc.) y mostrar mensajes al usuario cuando algo falla. Incluye validación en el frontend y uso de los errores que devuelve el backend.  
-**Dónde está:** En los mismos formularios anteriores: `Validators.required`, `Validators.email`, `Validators.min(0)` y mensajes bajo cada campo cuando `invalid && touched`; además se muestran los `errors` que devuelve la API.
+**Dónde está:** En los mismos formularios anteriores. No hay decenas de validadores: están solo en los campos que la rúbrica exige (obligatorios, email, mínimos). Detalle por archivo:
+
+| Archivo | Validators (líneas) | Mensajes `invalid && touched` (líneas) | Errores API |
+|---------|---------------------|----------------------------------------|-------------|
+| `features/leads/lead-form.component.ts` | `required` nombre, empresa, telefono, ticketEstimado (118-124); `email` (121); `min(0)` ticketEstimado (124) | 26-27, 33-34, 40-41, 46-47, 72-73 | 159: `r.errors?.map(...)` |
+| `features/interacciones/interaccion-form.component.ts` | `required` leadId, resumen, fechaInteraccion (102-107) | 60 | — |
+| `features/tareas/tarea-form.component.ts` | `required` titulo (aprox. 130) | 24 | — |
+| `features/clientes/cliente-form.component.ts` | `required` nombreContacto, empresa, telefono (104-106); `min(0)` mrr (112) | 25, 32, 39, 64 | 175: `r.errors?.map(...)` |
+
+Además: `[disabled]="form.invalid"` en el botón Guardar de cada formulario (ej. lead-form línea 93).
 
 ### CRUD completo + paginación + filtros
 **Qué significa:** **CRUD:** crear, leer (listar y ver detalle), actualizar y eliminar cada recurso (leads, interacciones, tareas, clientes). **Paginación:** listados por páginas (page, limit) en lugar de cargar todo. **Filtros:** búsqueda y filtros (estado, prioridad, fechas, etc.) para afinar el listado.  
-**Dónde está:** Listados en `lead-list.component.ts`, `interaccion-list.component.ts`, `tarea-list.component.ts`, `cliente-list.component.ts` (`frontend-angular/src/app/features/`). Rutas en `frontend-angular/src/app/app.routes.ts`.
+**Dónde está (archivos):** Listados en `lead-list.component.ts`, `interaccion-list.component.ts`, `tarea-list.component.ts`, `cliente-list.component.ts` (`frontend-angular/src/app/features/`). Rutas en `frontend-angular/src/app/app.routes.ts`.
+
+**Dónde está dentro de cada list (ej. `lead-list.component.ts`):**
+
+| Concepto | Dónde en el archivo (líneas aproximadas) |
+|----------|-----------------------------------------|
+| **Crear (C)** | Botón/link "Nuevo" → `routerLink="/leads/new"` en template (línea 25). La pantalla de alta es el formulario (`lead-form` con ruta `/leads/new`). |
+| **Leer – Listado (R)** | Tabla que muestra `leads()`: template líneas 114-162. Datos se cargan en `load()` (391-411) llamando a `leadService.getPaginated(...)`. |
+| **Leer – Detalle** | Link "Ver" por fila: `[routerLink]="['/leads', l.id]"` (línea 152). La vista detalle es `lead-detail.component.ts`. |
+| **Actualizar (U)** | Link "Editar" por fila: `[routerLink]="['/leads', l.id, 'edit']"` (línea 153). Mismo formulario en modo edición. |
+| **Eliminar (D)** | Botón eliminar (154) → `confirmDelete(l)` (416-418) → modal (218-234) → `doDelete()` (420-433) que llama a `leadService.delete(lead.id)`. |
+| **Paginación** | Variables: `page`, `limit`, `total`, `totalPages` (324-327, 412-416). UI: botones Anterior/Siguiente y "page / totalPages" (163-168). Lógica: `setPage(p)` (412-416) y en `load()` se pasa `page: this.page()` (394). |
+| **Filtros** | UI de filtros en template (31-105): búsqueda `search`, `estadoPipeline`, `prioridad`, "Más filtros" (canal, fechas, ticket min/max). Variables (329-336). En `load()` se pasan al API (396-404): `search`, `estadoPipeline`, `prioridad`, `canalOrigen`, `fechaCreacionDesde/Hasta`, `ticketMin/Max`. |
+
+Para **interacciones** (`interaccion-list.component.ts`): filtros template 19-44 (leadId, tipo, resultado); paginación 75-80 y `setPage`/`load`; CRUD: nuevo (16), listado (59-73), editar (68), eliminar (69 + modal 83-96 + `doDelete`).  
+Para **tareas** (`tarea-list.component.ts`): filtros 39-56 (estado, prioridad); paginación 90-95; CRUD: nuevo (17), listado (74-86), editar (82), eliminar (83 + modal 100-113).  
+Para **clientes** (`cliente-list.component.ts`): misma estructura; revisar líneas equivalentes (botón nuevo, tabla, editar, eliminar, paginación, filtros).
 
 ### UI Bootstrap
 **Qué significa:** Usar el framework **Bootstrap** (o compatible) para la interfaz: grid, botones, tablas, formularios, cards, modales, etc. La rúbrica valora un diseño limpio y coherente.  
