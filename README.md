@@ -66,53 +66,66 @@ Ambos frontends consumen **la misma API**; no se modifica la API para cada uno.
 
 ## Endpoints (API v1)
 
-Base: `http://localhost:3000/api/v1`
+Base: `http://localhost:3000/api/v1`  
+En producción: `https://darkorchid-lapwing-635040.hostingersite.com/api/v1`
 
 ### Leads
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| GET | /leads/get/all | Todos los leads |
-| GET | /leads/get/all/paginated | Paginado (page, limit, search, estadoPipeline, prioridad, canalOrigen) |
-| GET | /leads/get/export/csv | Exportar leads en CSV |
-| GET | /leads/get/:id | Lead por ID |
-| GET | /leads/get/:id/interacciones | Interacciones del lead |
-| GET | /leads/get/:id/tareas | Tareas del lead |
-| POST | /leads/post | Crear lead |
-| PUT/PATCH | /leads/update/:id | Actualizar lead |
-| DELETE | /leads/delete/:id | Eliminar lead |
+| GET | `/leads/get/all` | Todos los leads |
+| GET | `/leads/get/all/paginated` | Paginado (query: page, limit, search, estadoPipeline, prioridad, canalOrigen, fechaCreacionDesde, fechaCreacionHasta, ticketMin, ticketMax) |
+| GET | `/leads/get/export/csv` | Exportar leads en CSV |
+| GET | `/leads/get/:id` | Lead por ID |
+| GET | `/leads/get/:id/interacciones` | Interacciones del lead |
+| GET | `/leads/get/:id/tareas` | Tareas del lead |
+| POST | `/leads/post` | Crear lead |
+| PUT / PATCH | `/leads/update/:id` | Actualizar lead |
+| DELETE | `/leads/delete/:id` | Eliminar lead |
+| POST | `/leads/get/:id/convertir-cliente` | Convertir lead en cliente (body opcional: campos de cliente para sobrescribir) |
+
+### Clientes
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/clientes/get/all` | Todos los clientes |
+| GET | `/clientes/get/all/paginated` | Paginado (query: page, limit, search, estadoCliente, servicio, fechaAltaDesde, fechaAltaHasta, proximaRevisionDesde, proximaRevisionHasta) |
+| GET | `/clientes/get/:id` | Cliente por ID |
+| GET | `/clientes/get/:id/tareas` | Tareas asociadas al cliente |
+| POST | `/clientes/post` | Crear cliente |
+| PUT / PATCH | `/clientes/update/:id` | Actualizar cliente |
+| DELETE | `/clientes/delete/:id` | Eliminar cliente |
 
 ### Interacciones
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| GET | /interacciones/get/all | Todas |
-| GET | /interacciones/get/all/paginated | Paginado (page, limit, leadId, tipo, resultado) |
-| GET | /interacciones/get/:id | Por ID |
-| POST | /interacciones/post | Crear |
-| PUT/PATCH | /interacciones/update/:id | Actualizar |
-| DELETE | /interacciones/delete/:id | Eliminar |
+| GET | `/interacciones/get/all` | Todas |
+| GET | `/interacciones/get/all/paginated` | Paginado (query: page, limit, leadId, tipo, resultado) |
+| GET | `/interacciones/get/:id` | Por ID |
+| POST | `/interacciones/post` | Crear |
+| PUT / PATCH | `/interacciones/update/:id` | Actualizar |
+| DELETE | `/interacciones/delete/:id` | Eliminar |
 
 ### Tareas
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| GET | /tareas/get/all | Todas |
-| GET | /tareas/get/all/paginated | Paginado (page, limit, estado, prioridad, leadId) |
-| GET | /tareas/get/upcoming | Próximas (query: days=7) |
-| GET | /tareas/get/today | Tareas de hoy (recordatorio o vencimiento = hoy), ordenadas por hora de cierre |
-| GET | /tareas/get/:id | Por ID |
-| POST | /tareas/post | Crear |
-| PUT/PATCH | /tareas/update/:id | Actualizar |
-| DELETE | /tareas/delete/:id | Eliminar |
+| GET | `/tareas/get/all` | Todas |
+| GET | `/tareas/get/all/paginated` | Paginado (query: page, limit, estado, prioridad, leadId, clienteId) |
+| GET | `/tareas/get/upcoming` | Próximas (query: days=7) |
+| GET | `/tareas/get/today` | Tareas de hoy (recordatorio o vencimiento = hoy) |
+| GET | `/tareas/get/:id` | Por ID |
+| POST | `/tareas/post` | Crear |
+| PUT / PATCH | `/tareas/update/:id` | Actualizar |
+| DELETE | `/tareas/delete/:id` | Eliminar |
 
 ### Dashboard
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| GET | /dashboard/summary | Resumen (totalLeads, leadsActivos, leadsPorEstado, tareasPendientes, etc.) |
+| GET | `/dashboard/summary` | Resumen (totalLeads, leadsActivos, clientesActivos, tareasPendientes, tareasVencidas, reunionesSemana, actividadReciente, tareasHoy, proximasTareas) |
 
 ### Salud y documentación
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| GET | /api/v1/health | ok, message, provider (memory \| mongo) |
-| GET | /api/v1/documentacion o /api/v1/Documentacion | Documentación completa en JSON: todos los endpoints, parámetros, ejemplos de cuerpo/respuesta y comandos **curl** de prueba |
+| GET | `/health` | Estado de la API: ok, message, provider (memory \| mongo) |
+| GET | `/documentacion` o `/Documentacion` | Documentación completa en JSON: todos los endpoints, parámetros, ejemplos y comandos **curl** de prueba |
 
 ---
 
